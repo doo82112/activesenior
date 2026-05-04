@@ -155,6 +155,7 @@ export function ContentForm({
                 >
                   <option value="html">직접 작성 (HTML)</option>
                   <option value="link">외부 링크 (URL)</option>
+                  <option value="pdf">PDF 문서 (URL)</option>
                   <option value="youtube">YouTube 영상</option>
                 </select>
               </div>
@@ -233,6 +234,7 @@ export function ContentForm({
           <div className="flex justify-between items-end">
             <label className="text-sm font-medium text-slate-400 ml-1">
               {contentType === "html" ? "본문 내용 (HTML 지원)" : 
+               contentType === "pdf" ? "PDF 문서 링크 (URL)" : 
                contentType === "youtube" ? "YouTube 영상 링크 (URL)" : "외부 페이지 링크 (URL)"}
             </label>
             {contentType === "link" && (
@@ -251,6 +253,7 @@ export function ContentForm({
           <textarea
             className={`w-full ${contentType === "html" ? "min-h-[300px]" : "min-h-[80px]"} rounded-xl border border-slate-800 bg-slate-900/50 p-4 text-white focus:ring-2 focus:ring-accent outline-none transition-all font-mono text-sm`}
             placeholder={contentType === "html" ? "<p>컨텐츠 내용을 입력하세요...</p>" : 
+                         contentType === "pdf" ? "https://example.com/document.pdf" : 
                          contentType === "youtube" ? "https://www.youtube.com/watch?v=..." : "https://example.com/article/123"}
             value={bodyContent}
             onChange={(e) => setBodyContent(e.target.value)}
