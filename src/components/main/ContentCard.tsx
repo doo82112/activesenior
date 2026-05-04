@@ -29,11 +29,10 @@ export function ContentCard({ content }: ContentCardProps) {
   };
 
   return (
-    <div className="relative w-full h-full bg-background flex flex-col pt-1">
-      <div className="flex-1 overflow-y-auto custom-scrollbar">
+    <div className="relative w-full h-[100dvh] bg-background flex flex-col overflow-hidden">
+      <div className="flex-1 overflow-y-auto custom-scrollbar overflow-x-hidden">
         {isLink || isPdf || isYoutube ? (
-          <div className="relative w-full h-full pt-10">
-
+          <div className="relative w-full h-full pt-10 overflow-hidden">
             <iframe 
               src={
                 isPdf ? `${content.bodyContent}#toolbar=0&navpanes=0` : 
@@ -41,14 +40,15 @@ export function ContentCard({ content }: ContentCardProps) {
                   ? getYoutubeEmbedUrl(content.bodyContent) 
                   : content.bodyContent
               } 
-              className="w-full h-full border-none bg-slate-900"
+              className="w-full h-full border-none bg-slate-900 overflow-hidden"
+              style={{ minHeight: 'calc(100dvh - 40px)' }}
               title={content.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
             />
           </div>
         ) : (
-          <div className="flex flex-col">
+          <div className="flex flex-col min-h-full">
             {content.mediaUrl && (
               <div className="w-full aspect-video bg-slate-900 overflow-hidden">
                 <img src={content.mediaUrl} alt={content.title} className="w-full h-full object-cover" />

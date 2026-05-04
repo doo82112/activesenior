@@ -197,38 +197,6 @@ export function InfiniteSlider({ initialContent }: InfiniteSliderProps) {
     }
   };
 
-  const swipeState = useRef({
-    startX: 0,
-    startY: 0,
-    isSwiping: false,
-    isScrolling: false,
-  });
-
-  const handleSwipeStart = (clientX: number, clientY: number) => {
-    swipeState.current = { startX: clientX, startY: clientY, isSwiping: true, isScrolling: false };
-  };
-
-  const handleSwipeMove = (clientX: number, clientY: number) => {
-    if (!swipeState.current.isSwiping) return;
-    const deltaX = clientX - swipeState.current.startX;
-    const deltaY = clientY - swipeState.current.startY;
-    if (!swipeState.current.isScrolling && Math.abs(deltaY) > 10 && Math.abs(deltaY) > Math.abs(deltaX)) {
-      swipeState.current.isScrolling = true;
-      swipeState.current.isSwiping = false;
-    }
-  };
-
-  const handleSwipeEnd = (clientX: number) => {
-    if (!swipeState.current.isSwiping || swipeState.current.isScrolling) {
-      swipeState.current.isSwiping = false;
-      return;
-    }
-    const deltaX = clientX - swipeState.current.startX;
-    if (deltaX < -50) paginate(1);
-    else if (deltaX > 50) paginate(-1);
-    swipeState.current.isSwiping = false;
-  };
-
   if (!mounted) return null;
 
   const currentContent = contents[currentIndex] || initialContent[0];
@@ -238,16 +206,7 @@ export function InfiniteSlider({ initialContent }: InfiniteSliderProps) {
     <div className="relative h-[100dvh] w-full overflow-hidden bg-background">
       <LeaningGraph leaning={currentContent.leaningTag as any} reactionCount={currentContent.reactionCount} />
 
-      <div 
-        className="h-full w-full relative touch-pan-y"
-        onTouchStart={(e) => handleSwipeStart(e.touches[0].clientX, e.touches[0].clientY)}
-        onTouchMove={(e) => handleSwipeMove(e.touches[0].clientX, e.touches[0].clientY)}
-        onTouchEnd={(e) => handleSwipeEnd(e.changedTouches[0].clientX)}
-        onMouseDown={(e) => handleSwipeStart(e.clientX, e.clientY)}
-        onMouseMove={(e) => handleSwipeMove(e.clientX, e.clientY)}
-        onMouseUp={(e) => handleSwipeEnd(e.clientX)}
-        onMouseLeave={(e) => handleSwipeEnd(e.clientX)}
-      >
+      <div className="h-full w-full relative">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={currentContent.id}
@@ -262,15 +221,8 @@ export function InfiniteSlider({ initialContent }: InfiniteSliderProps) {
         </AnimatePresence>
 
         {/* 사이드 클릭 내비게이션 (모든 컨텐츠 타입에 적용) */}
-        <div className="absolute inset-y-0 left-0 w-16 z-[8000] bg-gradient-to-r from-black/20 to-transparent cursor-pointer" onClick={() => paginate(-1)} />
-        <div className="absolute inset-y-0 right-0 w-16 z-[8000] bg-gradient-to-l from-black/20 to-transparent cursor-pointer" onClick={() => paginate(1)} />
-        
-        {/* 하단 스와이프 방지 레이어 (버튼 영역에서의 드래그가 배경으로 전달되는 것을 막음) */}
-        <div 
-          className="absolute inset-x-0 bottom-0 h-40 z-[9000] pointer-events-auto" 
-          onMouseDown={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
-        />
+        <div className="absolute inset-y-0 left-0 w-12 sm:w-16 z-[8000] cursor-pointer" onClick={() => paginate(-1)} />
+        <div className="absolute inset-y-0 right-0 w-12 sm:w-16 z-[8000] cursor-pointer" onClick={() => paginate(1)} />
       </div>
 
       <FloatingAudioPlayer audioUrl={currentContent.audioUrl} />
