@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  password        String
+  nickname        String
+  role            String    @default("user") // 'admin', 'user'
+  leaningProfile  Json?     // { "red": 0.33, "blue": 0.33, "orange": 0.34 }
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  reactions       Reaction[]
+  activities      Activity[]
+  comments        Comment[]
+}
+
+model Content {
+  id              Int       @id @default(autoincrement())
+  category        String    // 'news', 'info', 'fun'
+  contentType     String    @default("html") // 'html', 'link'
+  title           String
+  bodyContent     String    @db.LongText
+  mediaUrl        String?
+  audioUrl        String?   // 팟캐스트/오디오 파일 URL
+  leaningTag      Json?     // { "red": 0.8, "blue": 0.1, "orange": 0.1 }
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  reactions       Reaction[]
+  activities      Activity[]
+  comments        Comment[]
+}
+
+model Reaction {
+  id              Int       @id @default(autoincrement())
+  type            String    // 'like', 'dislike'
+  userId          Int
+  contentId       Int
+  user            User      @relation(fields: [userId], references: [id])
+  content         Content   @relation(fields: [contentId], references: [id])
+  createdAt       DateTime  @default(now())
+
+  @@unique([userId, contentId])
+}
+
+model Activity {
+  id              Int       @id @default(autoincrement())
+  isBookmarked    Boolean   @default(false)
+  lastViewedAt    DateTime  @default(now())
+  userId          Int
+  contentId       Int
+  user            User      @relation(fields: [userId], references: [id])
+  content         Content   @relation(fields: [contentId], references: [id])
+
+  @@unique([userId, contentId])
+}
+
+model Comment {
+  id              Int       @id @default(autoincrement())
+  text            String    @db.Text
+  userId          Int
+  contentId       Int
+  user            User      @relation(fields: [userId], references: [id])
+  content         Content   @relation(fields: [contentId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}

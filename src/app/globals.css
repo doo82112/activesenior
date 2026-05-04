@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0f1115;
+  --foreground: #e2e8f0;
+  
+  /* Political Leaning Colors */
+  --leaning-red: #ef4444;
+  --leaning-blue: #3b82f6;
+  --leaning-orange: #f59e0b;
+  
+  /* UI Colors */
+  --card-bg: #1e293b;
+  --accent: #d4af37; /* Premium Gold */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-leaning-red: var(--leaning-red);
+  --color-leaning-blue: var(--leaning-blue);
+  --color-leaning-orange: var(--leaning-orange);
+  --color-card: var(--card-bg);
+  --color-accent: var(--accent);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  user-select: none; /* 텍스트 선택 방지 */
+  -webkit-user-select: none;
+  -webkit-touch-callout: none; /* 모바일 길게 누르기 메뉴 방지 */
+}
+
+/* 모든 이미지 드래그 방지 */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+}
+
+/* Custom Scrollbar for Premium Feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Animation Utilities */
+.magazine-transition {
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
