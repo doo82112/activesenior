@@ -32,7 +32,7 @@ export function ContentCard({ content }: ContentCardProps) {
 
   return (
     <div className="relative w-full h-[100dvh] bg-background flex flex-col overflow-hidden">
-      <div className="flex-1 overflow-y-auto custom-scrollbar overflow-x-hidden">
+      <div className={`flex-1 ${isLink || isYoutube ? 'overflow-hidden' : 'overflow-y-auto custom-scrollbar'} overflow-x-hidden`}>
         {isPdf ? (
           <div className="relative w-full h-full flex flex-col items-center justify-center p-6 text-center">
             {/* 배경 흐림 처리된 대표 이미지 */}
@@ -72,7 +72,7 @@ export function ContentCard({ content }: ContentCardProps) {
             </div>
           </div>
         ) : isLink || isYoutube ? (
-          <div className="relative w-full h-full pt-10 overflow-hidden">
+          <div className="relative w-full h-full pt-10 overflow-hidden flex flex-col">
             {/* 원본 보기 버튼 (외부 링크용) */}
             <div className="absolute top-2 right-4 z-[9000]">
               <a 
@@ -85,18 +85,19 @@ export function ContentCard({ content }: ContentCardProps) {
                 <Plus size={12} className="rotate-45" />
               </a>
             </div>
-            <iframe 
-              src={
-                isYoutube || content.bodyContent.includes("youtube.com") || content.bodyContent.includes("youtu.be")
-                  ? getYoutubeEmbedUrl(content.bodyContent) 
-                  : content.bodyContent
-              } 
-              className="w-full h-full border-none bg-slate-900 overflow-hidden"
-              style={{ minHeight: 'calc(100dvh - 40px)' }}
-              title={content.title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
+            <div className="flex-1 w-full overflow-hidden">
+              <iframe 
+                src={
+                  isYoutube || content.bodyContent.includes("youtube.com") || content.bodyContent.includes("youtu.be")
+                    ? getYoutubeEmbedUrl(content.bodyContent) 
+                    : content.bodyContent
+                } 
+                className="w-full h-full border-none bg-slate-900"
+                title={content.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
           </div>
         ) : (
           <div className="flex flex-col min-h-full">
