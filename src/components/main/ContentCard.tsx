@@ -33,9 +33,21 @@ export function ContentCard({ content }: ContentCardProps) {
       <div className="flex-1 overflow-y-auto custom-scrollbar overflow-x-hidden">
         {isLink || isPdf || isYoutube ? (
           <div className="relative w-full h-full pt-10 overflow-hidden">
+            {/* 원본 보기 버튼 (PDF 및 외부 링크용) */}
+            <div className="absolute top-2 right-4 z-[9000]">
+              <a 
+                href={content.bodyContent} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800/80 backdrop-blur-sm border border-white/10 rounded-full text-xs text-slate-200 hover:bg-accent hover:text-black transition-all"
+              >
+                <span>원본 보기</span>
+                <Plus size={12} className="rotate-45" />
+              </a>
+            </div>
             <iframe 
               src={
-                isPdf ? `${content.bodyContent}#toolbar=0&navpanes=0` : 
+                isPdf ? `https://docs.google.com/viewer?url=${encodeURIComponent(content.bodyContent)}&embedded=true` : 
                 (isYoutube || content.bodyContent.includes("youtube.com") || content.bodyContent.includes("youtu.be")) 
                   ? getYoutubeEmbedUrl(content.bodyContent) 
                   : content.bodyContent
