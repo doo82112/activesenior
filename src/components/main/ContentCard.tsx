@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ContentCardProps {
   content: {
@@ -33,9 +34,47 @@ export function ContentCard({ content }: ContentCardProps) {
   return (
     <div className="relative w-full h-[100dvh] bg-background flex flex-col overflow-hidden">
       <div className="flex-1 overflow-y-auto custom-scrollbar overflow-x-hidden">
-        {isLink || isPdf || isYoutube ? (
+        {isPdf ? (
+          <div className="relative w-full h-full flex flex-col items-center justify-center p-6 text-center">
+            {/* 배경 흐림 처리된 대표 이미지 */}
+            {content.mediaUrl && (
+              <div className="absolute inset-0 z-0">
+                <img src={content.mediaUrl} alt="" className="w-full h-full object-cover opacity-20 blur-sm" />
+                <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
+              </div>
+            )}
+            
+            <div className="relative z-10 space-y-8 max-w-md">
+              <div className="space-y-4">
+                <span className="inline-block px-4 py-1 rounded-full bg-accent/20 text-accent text-sm font-bold tracking-wider">
+                  PDF DOCUMENT
+                </span>
+                <h2 className="text-4xl md:text-5xl font-extrabold text-white leading-tight">
+                  {content.title}
+                </h2>
+                <p className="text-slate-400 text-lg">
+                  본 문서는 PDF 형식으로 제공됩니다.<br/>아래 버튼을 눌러 전체 내용을 확인하세요.
+                </p>
+              </div>
+
+              <div className="pt-4">
+                <Button 
+                  onClick={() => window.open(content.bodyContent, '_blank')}
+                  size="lg"
+                  className="w-full sm:w-auto px-12 h-16 text-xl rounded-2xl shadow-[0_20px_40px_rgba(212,175,55,0.2)]"
+                >
+                  문서 전체 읽기
+                </Button>
+              </div>
+
+              <p className="text-slate-500 text-sm">
+                * 모바일 네이티브 뷰어로 더 빠르고 선명하게 보실 수 있습니다.
+              </p>
+            </div>
+          </div>
+        ) : isLink || isYoutube ? (
           <div className="relative w-full h-full pt-10 overflow-hidden">
-            {/* 원본 보기 버튼 (PDF 및 외부 링크용) */}
+            {/* 원본 보기 버튼 (외부 링크용) */}
             <div className="absolute top-2 right-4 z-[9000]">
               <a 
                 href={content.bodyContent} 
@@ -49,8 +88,7 @@ export function ContentCard({ content }: ContentCardProps) {
             </div>
             <iframe 
               src={
-                isPdf ? `https://docs.google.com/viewer?url=${encodeURIComponent(content.bodyContent)}&embedded=true` : 
-                (isYoutube || content.bodyContent.includes("youtube.com") || content.bodyContent.includes("youtu.be")) 
+                isYoutube || content.bodyContent.includes("youtube.com") || content.bodyContent.includes("youtu.be")
                   ? getYoutubeEmbedUrl(content.bodyContent) 
                   : content.bodyContent
               } 
